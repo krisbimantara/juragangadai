@@ -1,0 +1,210 @@
+
+<!DOCTYPE html>
+<html lang="id-ID">
+<head>
+    <title>Juragan Gadai</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta content="width=device-width, initial-scale=1" name="viewport" />
+    <meta name=”description” content="description">
+    <link rel="shortcut icon" type="image/png" href="{{url_for('static', filename='JG_Icon.png')}}" sizes="16x16">
+    <!-- CSS Bootsrap ver.4.0 -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" media="all">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="{{url_for('static', filename='main.css')}}" type="text/css" media="all"/>
+</head>
+
+
+
+<!-- ====================================================== /NAVBAR  ===================================================== -->
+
+<style>
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+input[type=text] {
+background: #FFFFFF 0% 0% no-repeat padding-box;
+border: 2px solid #D0D8E6;
+border-radius: 12px;
+height: 50px;
+}
+
+.input-group-text{
+background: #D0D8E6 0% 0% no-repeat padding-box;
+border-radius: 12px 0px 0px 12px;
+height: 50px;
+width: 110px;
+}
+
+td {
+  height: 40px;
+  width:65%;
+
+}
+@media (min-width:575px) and (max-width:1024px){
+    .card.card-body{
+        padding: 5%;
+    }
+    .col-sm-8.col-md-8.input-group{
+        align-content: flex-start;
+        height: auto;
+    }
+}
+</style>
+
+
+<nav class="navbar navbar-dark bg-dark">
+    <a class="navbar-brand" href="#">
+      <img src="{{url_for('static', filename='JG_Text.png')}}" width="90" height="40" alt="">
+    </a>
+</nav>
+
+<div class="mt-5"></div><!-- mt-5 ml-4 -->
+
+
+<div class="container" id="hasil">
+
+
+<div class="card mx-auto card-body mb-5 col-sm-8" style="box-shadow: 0px 20px 40px #75B2DD1A; border: 1px solid #D0D8E6; border-radius: 12px;">
+<div class="container  mt-5"></div>
+<div class="col-sm text-center">
+  <h3><strong>{{error_text.err1}}</strong></h3>
+  <h4><strong>{{error_text.err2}}</strong></h4>
+</div>
+<div class="mt-5"></div>
+<br></br>
+<div class="form-group row">
+    <div class="col-sm-4 col-form-label"></div>
+    <div class="col-sm-5 input-group ">
+    <a class="btn btn-simulasi-flat" role="button" href="{{ url_for('home') }}">KEMBALI KE SIMULASI</a>
+    </div>
+</div>
+ </div>
+</div> <!-- container -->
+
+
+</body>
+</html>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+$(document).ready(function(){
+$("#preloader").fadeOut();
+})
+</script> 
+
+
+<script>
+ var bSetor = false;
+  var bWaktu = false;
+  $(document).ready(function(){
+      //$('#setor').maskMoney({thousands:'.', decimal:',', precision:0});
+      $('#less').hide();
+      $('#more').hide();
+      $('#lesss').hide();
+      $('#moree').hide();
+
+    //   $('#hasil').hide();
+      $('#btnHitung').prop('disabled', true);
+  });
+
+  function findAndReplace(string, target, replacement) {
+   var i = 0, length = string.length;
+   for (i; i < length; i++) {
+     string = string.replace(target, replacement);
+   }
+   return string;
+  }
+
+  function updateSetor(input) {
+    var str = input.value;
+    var strr=findAndReplace(str,".","");
+
+    if (parseInt(strr) < 2000000) {
+        $('#lesss').show();
+        window.bSetor = false;
+    }else if(parseInt(strr) > 50000000){
+        $('#moree').show();
+        window.bSetor = false;
+    }else{
+      $('#lesss').hide();
+      $('#moree').hide();
+      window.bSetor = true;
+    }
+  }
+
+  var rupiah = document.getElementById("pinjam");
+    rupiah.addEventListener("keyup", function(e) {
+ 
+    rupiah.value = formatRupiah(this.value);
+  });
+
+
+
+/* Fungsi formatRupiah */
+function formatRupiah(angka){
+	var number_string = angka.replace(/[^,\d]/g, '').toString(),
+	split   		= number_string.split(','),
+	sisa     		= split[0].length % 3,
+	rupiah     		= split[0].substr(0, sisa),
+	ribuan     		= split[0].substr(sisa).match(/\d{3}/gi);
+ 
+	// tambahkan titik jika yang di input sudah menjadi angka ribuan
+	if(ribuan){
+		separator = sisa ? '.' : '';
+		rupiah += separator + ribuan.join('.');
+	}
+ 
+	return rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
+	
+}
+
+  function toRp(angka){
+    var rev     = parseInt(angka, 10).toString().split('').reverse().join('');
+    var rev2    = '';
+    for(var i = 0; i < rev.length; i++){
+        rev2  += rev[i];
+        if((i + 1) % 3 === 0 && i !== (rev.length - 1)){
+            rev2 += '.';
+        }
+    }
+    return 'Rp. ' + rev2.split('').reverse().join('') + ',00';
+  }
+
+  function checkInput(){
+    var bln=findAndReplace($('#pinjam').val(),".","");
+    var setoran_bulanan = parseInt(bln);
+    var jangka_waktu = $('#waktu').val();
+
+    if(setoran_bulanan > 0 && jangka_waktu > 0 && window.bSetor){
+        $('#btnHitung').prop('disabled', false);
+    }else{
+        $('#btnHitung').prop('disabled', true);
+    }
+  }
+//   function hitung(){
+//     var OTRa=findAndReplace($('#pinjam').val(),".","");
+//     var OTRFix = parseInt(OTRa);
+//     jangka_waktu = document.getElementById("waktu").value;
+
+//     $('#input').hide();
+//     $('#hasil').show();
+
+
+//     $('#tenor_dipilih').text(jangka_waktu + " Bulan");
+//     //$('#hasil_total_angsuran').text(toRp(angsuranAwal));
+//   }
+
+
+
+</script>
