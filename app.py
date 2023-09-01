@@ -1,4 +1,6 @@
 from flask import Flask, render_template, request
+import pandas as pd
+from modules import moduleWeb as mw
 
 app = Flask(__name__, template_folder='templates', static_folder='static')
 
@@ -37,6 +39,4 @@ def benelli():
     return render_template('Benelli.html')
     
 if __name__ == '__main__':
-    import pandas as pd
-    from modules import moduleWeb as mw
     app.run(debug=True)
